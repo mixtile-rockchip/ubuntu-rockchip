@@ -175,6 +175,14 @@ cp ${overlay_dir}/etc/rc.local ${chroot_dir}/etc/rc.local
 # Cloud init config
 cp ${overlay_dir}/etc/cloud/cloud.cfg.d/99-fake_cloud.cfg ${chroot_dir}/etc/cloud/cloud.cfg.d/99-fake_cloud.cfg
 
+# adbd
+cp ${overlay_dir}/usr/bin/adbd ${chroot_dir}/usr/bin/adbd
+cp ${overlay_dir}/usr/bin/usbdevice ${chroot_dir}/usr/bin/usbdevice
+chmod a+x ${chroot_dir}/usr/bin/usbdevice
+cp ${overlay_dir}/etc/init.d/.usb_config ${chroot_dir}/etc/init.d/.usb_config
+cp ${overlay_dir}/usr/lib/systemd/system/adbd.service ${chroot_dir}/usr/lib/systemd/system/adbd.service
+chroot ${chroot_dir} /bin/bash -c "systemctl enable adbd"
+
 # Default adduser config
 cp ${overlay_dir}/etc/adduser.conf ${chroot_dir}/etc/adduser.conf
 
