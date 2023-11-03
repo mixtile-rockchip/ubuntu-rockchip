@@ -72,12 +72,12 @@ index d46226011c0..ba0e7306406 100644
 +	u-boot,dm-pre-reloc;
 +	vpcie3v3-supply = <&vcc3v3_pcie30>;
 +	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
++	status = "disabled";
 +};
 +
 +&pcie30phy {
 +	u-boot,dm-pre-reloc;
-+	status = "okay";
++	status = "disabled";
 +};
 +
 +&combphy0_ps {
