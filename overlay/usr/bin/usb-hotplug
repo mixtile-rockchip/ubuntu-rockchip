@@ -1,0 +1,37 @@
+#! /bin/sh
+sleep 1
+
+usb0_devname=fc000000.usb
+usb0_path=/devices/platform/usbdrd3_0/$usb0_devname
+cur_dev=$(cat /sys/kernel/config/usb_gadget/rockchip/UDC)
+usb0_exist=$(ls /sys/class/udc/| awk '{print $1}' | grep $usb0_devname)
+
+if [ "$usb0_exist"x != "$usb0_devname"x ] ; then
+	exit 0
+fi
+
+if [ "$cur_dev"x = "$usb0_devname"x ] ; then
+	exit 0
+fi
+
+if [ "$1"x = "$usb0_path"x  ] ; then
+echo "none" > /sys/kernel/config/usb_gadget/rockchip/UDC
+sleep 1
+echo $usb0_devname > /sys/kernel/config/usb_gadget/rockchip/UDC
+functions=`cat /sys/kernel/config/usb_gadget/rockchip/configs/b.1/strings/0x409/configuration`
+
+# if no "_" string to "cut" command, it will set the full string to output.
+# add "_" to string functions avoiding no "_" case
+i=2
+functions=_${functions}
+
+tmp=`echo $functions | cut -d _ -f $i`
+until [ -z "$tmp" ]; do
+	if [ "$tmp" == "mtp" ]; then
+		mtp-server&
+		break
+	fi
+	i=`expr $i + 1`
+	tmp=`echo $functions | cut -d _ -f $i`
+done
+fi

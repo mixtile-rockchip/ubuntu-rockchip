@@ -1,0 +1,3 @@
+SUBSYSTEM=="udc",ACTION=="change",DRIVER=="configfs-gadget",RUN+="/usr/bin/usb-hotplug %E{DEVPATH}"
+SUBSYSTEM=="udc",ACTION=="add",RUN+="/usr/bin/usb-hotplug %E{DEVPATH}"
+SUBSYSTEM=="platform",ACTION=="change",DRIVER=="dwc3",RUN+="/usr/bin/usb-hotplug %E{DEVPATH}"
