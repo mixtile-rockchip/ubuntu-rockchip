@@ -181,6 +181,9 @@ cp ${overlay_dir}/usr/bin/usbdevice ${chroot_dir}/usr/bin/usbdevice
 chmod a+x ${chroot_dir}/usr/bin/usbdevice
 cp ${overlay_dir}/etc/init.d/.usb_config ${chroot_dir}/etc/init.d/.usb_config
 cp ${overlay_dir}/usr/lib/systemd/system/adbd.service ${chroot_dir}/usr/lib/systemd/system/adbd.service
+cp ${overlay_dir}/usr/lib/udev/rules.d/61-usbdevice.rules ${chroot_dir}/usr/lib/udev/rules.d/61-usbdevice.rules
+cp ${overlay_dir}/usr/bin/usb-hotplug ${chroot_dir}/usr/bin/usb-hotplug
+chmod a+x ${chroot_dir}/usr/bin/usb-hotplug
 chroot ${chroot_dir} /bin/bash -c "systemctl enable adbd"
 
 # Default adduser config
