@@ -7,7 +7,7 @@ cd "$(dirname -- "$(readlink -f -- "$0")")"
 
 usage() {
 cat << HEREDOC
-Usage: $0 --board=[orangepi-5|orangepi-5b|orangepi-5-plus|rock-5b|rock-5a|radxa-cm5-io|nanopc-t6|nanopi-r6c|nanopi-r6s|indiedroid-nova|mixtile-blade3|lubancat-4|turing-rk1]
+Usage: $0 --board=[orangepi-5|orangepi-5b|orangepi-5-plus|rock-5b|rock-5a|radxa-cm5-io|nanopc-t6|nanopi-r6c|nanopi-r6s|indiedroid-nova|mixtile-blade3|mixtile-core3588e|lubancat-4|turing-rk1]
 
 Required arguments:
   -b, --board=BOARD      target board 
@@ -117,7 +117,7 @@ elif [ "${BOARD}" == nanopi-r6c ] || [ "${BOARD}" == nanopi-r6s ] || [ "${BOARD}
     export VENDOR=friendlyelec
 elif [ "${BOARD}" == indiedroid-nova ]; then
     export VENDOR=9tripod
-elif [ "${BOARD}" == mixtile-blade3 ]; then
+elif [ "${BOARD}" == mixtile-blade3 ] || [ "${BOARD}" == mixtile-core3588e ]; then
     export VENDOR=mixtile
 elif [ "${BOARD}" == turing-rk1 ]; then
     export VENDOR=turing

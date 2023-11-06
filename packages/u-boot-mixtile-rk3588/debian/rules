@@ -63,7 +63,7 @@ ${BOARDS}:
 
 build: ${BOARDS}
 
-binary-arch: $(addprefix package-,$(filter-out blade3_sata,$(BOARDS)))
+binary-arch: $(addprefix package-,$(BOARDS))
 
 binary: binary-arch
 
@@ -79,9 +79,6 @@ package-%:
 	@cp debian/bin/u-boot-install debian/tmp/u-boot/usr/bin/u-boot-install
 	@cp debian/bin/u-boot-install-mtd debian/tmp/u-boot/usr/bin/u-boot-install-mtd
 
-	@cp debian/build/$(subst package-,,$@)_sata/u-boot.itb debian/tmp/u-boot/usr/lib/u-boot/u-boot-sata.itb
-	@cp debian/build/$(subst package-,,$@)_sata/idbloader.img debian/tmp/u-boot/usr/lib/u-boot/idbloader_sata.img
-	@cp debian/build/$(subst package-,,$@)_sata/rkspi_loader.img debian/tmp/u-boot/usr/lib/u-boot/rkspi_loader_sata.img
 
 	@mkdir -m 755 -p "debian/tmp/u-boot/DEBIAN"
 	@cp debian/preinst debian/tmp/u-boot/DEBIAN/preinst
