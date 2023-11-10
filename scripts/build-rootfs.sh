@@ -305,16 +305,19 @@ cat << EOF | chroot ${chroot_dir} /bin/bash
 set -eE 
 trap 'echo Error: in $0 on line $LINENO' ERR
 
-addgroup --gid 29999 oem
-adduser --gecos "OEM Configuration (temporary user)" --add_extra_groups --disabled-password --gid 29999 --uid 29999 oem
-usermod -a -G adm,sudo -p "$(date +%s | sha256sum | base64 | head -c 32)" oem
+# addgroup --gid 29999 oem
+# adduser --gecos "OEM Configuration (temporary user)" --add_extra_groups --disabled-password --gid 29999 --uid 29999 oem
+# usermod -a -G adm,sudo -p "$(date +%s | sha256sum | base64 | head -c 32)" oem
 
-apt-get -y install --no-install-recommends oem-config-slideshow-ubuntu oem-config \
-oem-config-gtk ubiquity-frontend-gtk ubiquity-ubuntu-artwork ubiquity 
+addgroup --gid 1000 mixtile
+adduser --gecos "ubuntu user" --add_extra_groups --disabled-password --gid 1000 --uid 1000 mixtile
+usermod -a -G adm,sudo -p "mixtile" mixtile
+# apt-get -y install --no-install-recommends oem-config-slideshow-ubuntu oem-config \
+# oem-config-gtk ubiquity-frontend-gtk ubiquity-ubuntu-artwork ubiquity 
 
 mkdir -p /var/log/installer
 touch /var/log/{syslog,installer/debug}
-oem-config-prepare --quiet
+#oem-config-prepare --quiet
 
 # Clean package cache
 apt-get -y autoremove && apt-get -y clean && apt-get -y autoclean
