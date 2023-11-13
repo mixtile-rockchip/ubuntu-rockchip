@@ -223,8 +223,10 @@ cp ${overlay_dir}/usr/share/initramfs-tools/hooks/rtl-bt ${chroot_dir}/usr/share
 cp ${overlay_dir}/usr/lib/systemd/system/rtc-hym8563.service ${chroot_dir}/usr/lib/systemd/system/rtc-hym8563.service
 
 # Set term for serial tty
+cp ${overlay_dir}/usr/lib/systemd/system/serial-getty@.service ${chroot_dir}/usr/lib/systemd/system/serial-getty@.service
 mkdir -p ${chroot_dir}/lib/systemd/system/serial-getty@.service.d/
 cp ${overlay_dir}/usr/lib/systemd/system/serial-getty@.service.d/10-term.conf ${chroot_dir}/usr/lib/systemd/system/serial-getty@.service.d/10-term.conf
+chroot ${chroot_dir} /bin/bash -c "systemctl enable serial-getty"
 
 # Fix 120 second timeout bug
 mkdir -p ${chroot_dir}/etc/systemd/system/systemd-networkd-wait-online.service.d/
