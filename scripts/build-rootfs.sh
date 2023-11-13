@@ -313,7 +313,8 @@ trap 'echo Error: in $0 on line $LINENO' ERR
 
 addgroup --gid 1000 mixtile
 adduser --gecos "ubuntu user" --add_extra_groups --disabled-password --gid 1000 --uid 1000 mixtile
-usermod -a -G adm,sudo -p "mixtile" mixtile
+usermod -a -G adm,sudo mixtile
+echo "mixtile:mixtile" | chpasswd
 # apt-get -y install --no-install-recommends oem-config-slideshow-ubuntu oem-config \
 # oem-config-gtk ubiquity-frontend-gtk ubiquity-ubuntu-artwork ubiquity 
 
