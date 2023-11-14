@@ -1,0 +1,12 @@
+[Unit]
+Description=adbd for Ubuntu
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/usbdevice start
+ExecStop=/usr/bin/usbdevice stop
+ExecReload=/usr/bin/usbdevice reload
+
+[Install]
+WantedBy=default.target
+

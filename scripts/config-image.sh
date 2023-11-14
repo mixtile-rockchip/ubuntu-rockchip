@@ -171,6 +171,16 @@ for type in $target; do
     {
 	echo 'SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-hdmi0-sound", ENV{SOUND_DESCRIPTION}="HDMI0 Audio"'
     } > ${chroot_dir}/etc/udev/rules.d/90-naming-audios.rules
+        cp ${overlay_dir}/usr/bin/adbd ${chroot_dir}/usr/bin/adbd
+        cp ${overlay_dir}/etc/init.d/.usb_config ${chroot_dir}/etc/init.d/.usb_config
+        cp ${overlay_dir}/usr/bin/usbdevice ${chroot_dir}/usr/bin/usbdevice
+        cp ${overlay_dir}/usr/lib/systemd/system/adbd.service ${chroot_dir}/usr/lib/systemd/system/adbd.service
+        chroot ${chroot_dir} /bin/bash -c "systemctl enable adbd"
+	if [ -f ${chroot_dir}/usr/share/flash-kernel/db/all.db ]; then
+                if ! grep -q "Machine: Mixtile Core 3588E" ${chroot_dir}/usr/share/flash-kernel/db/all.db; then
+                        sed -i "/Machine: Mixtile Blade 3/a Machine: Mixtile Core 3588E" ${chroot_dir}/usr/share/flash-kernel/db/all.db
+                fi
+        fi
     elif [ "${BOARD}" == indiedroid-nova ]; then
     {
         echo 'SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-hdmi0-sound", ENV{SOUND_DESCRIPTION}="HDMI0 Audio"'
