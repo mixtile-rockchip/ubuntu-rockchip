@@ -306,20 +306,21 @@ cat << EOF | chroot ${chroot_dir} /bin/bash
 set -eE 
 trap 'echo Error: in $0 on line $LINENO' ERR
 
-# addgroup --gid 29999 oem
-# adduser --gecos "OEM Configuration (temporary user)" --add_extra_groups --disabled-password --gid 29999 --uid 29999 oem
-# usermod -a -G adm,sudo -p "$(date +%s | sha256sum | base64 | head -c 32)" oem
-
 addgroup --gid 1000 mixtile
 adduser --gecos "ubuntu user" --add_extra_groups --disabled-password --gid 1000 --uid 1000 mixtile
 usermod -a -G adm,sudo mixtile
 echo "mixtile:mixtile" | chpasswd
-# apt-get -y install --no-install-recommends oem-config-slideshow-ubuntu oem-config \
-# oem-config-gtk ubiquity-frontend-gtk ubiquity-ubuntu-artwork ubiquity 
+
+addgroup --gid 29999 oem
+adduser --gecos "OEM Configuration (temporary user)" --add_extra_groups --disabled-password --gid 29999 --uid 29999 oem
+usermod -a -G adm,sudo -p "$(date +%s | sha256sum | base64 | head -c 32)" oem
+
+apt-get -y install --no-install-recommends oem-config-slideshow-ubuntu oem-config \
+oem-config-gtk ubiquity-frontend-gtk ubiquity-ubuntu-artwork ubiquity 
 
 mkdir -p /var/log/installer
 touch /var/log/{syslog,installer/debug}
-#oem-config-prepare --quiet
+oem-config-prepare --quiet
 
 # Clean package cache
 apt-get -y autoremove && apt-get -y clean && apt-get -y autoclean
@@ -381,6 +382,11 @@ chroot ${chroot_dir} /bin/bash -c "dconf update"
 # Have plymouth use the framebuffer
 mkdir -p ${chroot_dir}/etc/initramfs-tools/conf-hooks.d
 cp ${overlay_dir}/etc/initramfs-tools/conf-hooks.d/plymouth ${chroot_dir}/etc/initramfs-tools/conf-hooks.d/plymouth
+
+# fix adbd.service and serial-getty@ttyFIQ0.service starting sequence
+cp ${overlay_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service ${chroot_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service
+cp ${overlay_dir}/usr/lib/systemd/system/oem-config.target ${chroot_dir}/usr/lib/systemd/system/oem-config.target
+cp ${overlay_dir}/usr/lib/systemd/system/graphical.target ${chroot_dir}/usr/lib/systemd/system/graphical.target
 
 # Mouse lag/stutter (missed frames) in Wayland sessions
 # https://bugs.launchpad.net/ubuntu/+source/mutter/+bug/1982560
