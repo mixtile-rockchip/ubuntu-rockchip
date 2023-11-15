@@ -1,6 +1,5 @@
 [Unit]
 Description=adbd for Debian
-Before=lightdm.service
 
 [Service]
 Type=forking
