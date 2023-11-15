@@ -230,6 +230,7 @@ for type in $target; do
 
     # Clean package cache
     chroot ${chroot_dir} /bin/bash -c "apt-get -y autoremove && apt-get -y clean && apt-get -y autoclean"
+    chroot ${chroot_dir} /bin/bash -c "add-apt-repository -y -r ppa:jjriek/rockchip"
 
     # Copy kernel and initrd for the boot partition
     mkdir -p ${chroot_dir}/boot/firmware/
