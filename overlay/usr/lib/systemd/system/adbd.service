@@ -6,6 +6,7 @@ Type=forking
 ExecStart=/usr/bin/usbdevice start
 ExecStop=/usr/bin/usbdevice stop
 ExecReload=/usr/bin/usbdevice reload
+Environment=TERM=linux
 
 [Install]
 WantedBy=multi-user.target
