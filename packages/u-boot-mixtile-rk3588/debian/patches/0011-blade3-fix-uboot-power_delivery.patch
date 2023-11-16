@@ -1,0 +1,132 @@
+Index: u-boot-mixtile/arch/arm/dts/rk3588-blade3.dts
+===================================================================
+--- u-boot-mixtile.orig/arch/arm/dts/rk3588-blade3.dts
++++ u-boot-mixtile/arch/arm/dts/rk3588-blade3.dts
+@@ -8,6 +8,7 @@
+ #include "rk3588.dtsi"
+ #include "rk3588-u-boot.dtsi"
+ #include <dt-bindings/input/input.h>
++#include "dt-bindings/usb/pd.h"
+ 
+ / {
+ 	model = "Mixtile Blade 3";
+@@ -87,26 +88,62 @@
+ 
+ &i2c1 {
+ 	status = "okay";
+-
++	u-boot,dm-pre-reloc;
+ 	clock-frequency = <400000>;
+ 	i2c-scl-rising-time-ns = <160>;
+ 	i2c-scl-falling-time-ns = <30>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c1m2_xfer>;
+ 
+ 	usbc1: fusb302@22 {
++		u-boot,dm-pre-reloc;
+ 		compatible = "fcs,fusb302";
+ 		reg = <0x22>;
+ 		interrupt-parent = <&gpio0>;
+ 		interrupts = <RK_PC6 IRQ_TYPE_LEVEL_LOW>;
++		//fcs,int_n = <&gpio0 RK_PC6 IRQ_TYPE_LEVEL_LOW>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&usbc1_int>;
+ 		vbus-supply = <&vbus5v0_typec1>;
+ 		status = "okay";
++
++		usb_con1: connector {
++			u-boot,dm-pre-reloc;
++			status = "okay";
++			compatible = "usb-c-connector";
++			label = "USB-C";
++			data-role = "dual";
++			power-role = "dual";
++			try-power-role = "sink";
++			op-sink-microwatt = <15000000>;
++			sink-pdos =
++				// <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
++				<PDO_FIXED(5000, 1000, PDO_FIXED_USB_COMM)
++				PDO_VAR(5000, 20000, 1000)
++				PDO_PPS_APDO(5000, 20000, 1000)>;
++			source-pdos =
++				<PDO_FIXED(5000, 1000, PDO_FIXED_USB_COMM)>;
++
++			altmodes {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				altmode@0 {
++					reg = <0>;
++					svid = <0xff01>;
++					vdo = <0xffffffff>;
++				};
++			};
++		};
+ 	};
+ };
+ 
+ &pinctrl {
++	u-boot,dm-pre-reloc;
+ 	usb-typec {
++		u-boot,dm-pre-reloc;
+ 		usbc1_int: usbc1-int {
++			u-boot,dm-pre-reloc;
+ 			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
+ 		};
+ 	};
+Index: u-boot-mixtile/arch/arm/dts/rk3588s-pinctrl.dtsi
+===================================================================
+--- u-boot-mixtile.orig/arch/arm/dts/rk3588s-pinctrl.dtsi
++++ u-boot-mixtile/arch/arm/dts/rk3588s-pinctrl.dtsi
+@@ -620,6 +620,7 @@
+ 	};
+ 
+ 	i2c1 {
++		u-boot,dm-pre-reloc;
+ 		i2c1m0_xfer: i2c1m0-xfer {
+ 			rockchip,pins =
+ 				/* i2c1_scl_m0 */
+@@ -637,6 +638,7 @@
+ 		};
+ 
+ 		i2c1m2_xfer: i2c1m2-xfer {
++			u-boot,dm-pre-reloc;
+ 			rockchip,pins =
+ 				/* i2c1_scl_m2 */
+ 				<0 RK_PD4 9 &pcfg_pull_none_smt>,
+Index: u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi
+===================================================================
+--- u-boot-mixtile.orig/arch/arm/dts/rockchip-pinconf.dtsi
++++ u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi
+@@ -267,6 +267,7 @@
+ 	};
+ 
+ 	pcfg_pull_none_smt: pcfg-pull-none-smt {
++		u-boot,dm-pre-reloc;
+ 		bias-disable;
+ 		input-schmitt-enable;
+ 	};
+Index: u-boot-mixtile/arch/arm/mach-rockchip/board.c
+===================================================================
+--- u-boot-mixtile.orig/arch/arm/mach-rockchip/board.c
++++ u-boot-mixtile/arch/arm/mach-rockchip/board.c
+@@ -429,8 +429,9 @@ int board_late_init(void)
+ 	if (boot_mode == BOOT_MODE_NORMAL ||
+ 			boot_mode == BOOT_MODE_RECOVERY ||
+ 			boot_mode == BOOT_MODE_UNDEFINE) {
+-		power_delivery_func();
++		//power_delivery_func();
+ 	}
++	power_delivery_func();
+ 
+ #ifdef CONFIG_ROCKCHIP_SET_ETHADDR
+ 	rockchip_set_ethaddr();
+Index: u-boot-mixtile/configs/blade3_defconfig
+===================================================================
+--- u-boot-mixtile.orig/configs/blade3_defconfig
++++ u-boot-mixtile/configs/blade3_defconfig
+@@ -239,3 +239,4 @@ CONFIG_AVB_LIBAVB_AB=y
+ CONFIG_AVB_LIBAVB_ATX=y
+ CONFIG_AVB_LIBAVB_USER=y
+ CONFIG_RK_AVB_LIBAVB_USER=y
++CONFIG_CMD_I2C=y
