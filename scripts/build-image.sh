@@ -291,7 +291,7 @@ if [ -z "${img##*server*}" ]; then
         sed -i 's/eth0:/enP2p33s0:\n      dhcp4: true\n      optional: true\n    enP4p65s0:/g' ${mount_point}/system-boot/network-config
     elif [ "${BOARD}" == mixtile-blade3 ]; then
         sed -i 's/eth0:/enP2p35s0:\n      dhcp4: true\n      optional: true\n    enP2p36s0:/g' ${mount_point}/system-boot/network-config
-    elif [ "${BOARD}" == mixtile-blade3 ]; then
+    elif [ "${BOARD}" == mixtile-core3588e ]; then
 	sed -i 's/expire: true/expire: false/g' ${mount_point}/system-boot/user-data
     elif [ "${BOARD}" == lubancat-4 ]; then
         sed -i 's/eth0:/enP4p65s0:\n      dhcp4: true\n      optional: true\n    enP3p49s0:/g' ${mount_point}/system-boot/network-config
