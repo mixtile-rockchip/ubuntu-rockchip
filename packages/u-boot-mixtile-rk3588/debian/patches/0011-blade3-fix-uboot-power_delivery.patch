@@ -1,7 +1,6 @@
-Index: u-boot-mixtile/arch/arm/dts/rk3588-blade3.dts
-===================================================================
---- u-boot-mixtile.orig/arch/arm/dts/rk3588-blade3.dts
-+++ u-boot-mixtile/arch/arm/dts/rk3588-blade3.dts
+diff -uNr u-boot-mixtile_new/arch/arm/dts/rk3588-blade3.dts u-boot-mixtile/arch/arm/dts/rk3588-blade3.dts
+--- u-boot-mixtile_new/arch/arm/dts/rk3588-blade3.dts	2023-11-20 14:53:16.802418563 +0000
++++ u-boot-mixtile/arch/arm/dts/rk3588-blade3.dts	2023-11-20 14:53:43.758803509 +0000
 @@ -8,6 +8,7 @@
  #include "rk3588.dtsi"
  #include "rk3588-u-boot.dtsi"
@@ -74,10 +73,9 @@ Index: u-boot-mixtile/arch/arm/dts/rk3588-blade3.dts
  			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
  		};
  	};
-Index: u-boot-mixtile/arch/arm/dts/rk3588s-pinctrl.dtsi
-===================================================================
---- u-boot-mixtile.orig/arch/arm/dts/rk3588s-pinctrl.dtsi
-+++ u-boot-mixtile/arch/arm/dts/rk3588s-pinctrl.dtsi
+diff -uNr u-boot-mixtile_new/arch/arm/dts/rk3588s-pinctrl.dtsi u-boot-mixtile/arch/arm/dts/rk3588s-pinctrl.dtsi
+--- u-boot-mixtile_new/arch/arm/dts/rk3588s-pinctrl.dtsi	2023-11-20 14:53:16.678416783 +0000
++++ u-boot-mixtile/arch/arm/dts/rk3588s-pinctrl.dtsi	2023-11-20 14:53:43.762803565 +0000
 @@ -620,6 +620,7 @@
  	};
  
@@ -94,10 +92,9 @@ Index: u-boot-mixtile/arch/arm/dts/rk3588s-pinctrl.dtsi
  			rockchip,pins =
  				/* i2c1_scl_m2 */
  				<0 RK_PD4 9 &pcfg_pull_none_smt>,
-Index: u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi
-===================================================================
---- u-boot-mixtile.orig/arch/arm/dts/rockchip-pinconf.dtsi
-+++ u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi
+diff -uNr u-boot-mixtile_new/arch/arm/dts/rockchip-pinconf.dtsi u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi
+--- u-boot-mixtile_new/arch/arm/dts/rockchip-pinconf.dtsi	2023-11-20 14:53:16.682416840 +0000
++++ u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi	2023-11-20 14:53:43.762803565 +0000
 @@ -267,6 +267,7 @@
  	};
  
@@ -106,11 +103,22 @@ Index: u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi
  		bias-disable;
  		input-schmitt-enable;
  	};
-Index: u-boot-mixtile/configs/blade3_defconfig
-===================================================================
---- u-boot-mixtile.orig/configs/blade3_defconfig
-+++ u-boot-mixtile/configs/blade3_defconfig
-@@ -239,3 +239,4 @@ CONFIG_AVB_LIBAVB_AB=y
+diff -uNr u-boot-mixtile_new/arch/arm/mach-rockchip/board.c u-boot-mixtile/arch/arm/mach-rockchip/board.c
+--- u-boot-mixtile_new/arch/arm/mach-rockchip/board.c	2023-11-20 14:53:17.406427234 +0000
++++ u-boot-mixtile/arch/arm/mach-rockchip/board.c	2023-11-20 14:55:21.284164046 +0000
+@@ -425,7 +425,7 @@
+ int board_late_init(void)
+ {
+ 	int boot_mode;
+-	boot_mode = readl((void *)CONFIG_ROCKCHIP_BOOT_MODE_REG);
++	boot_mode = rockchip_get_boot_mode();
+ 	if (boot_mode == BOOT_MODE_NORMAL ||
+ 			boot_mode == BOOT_MODE_RECOVERY ||
+ 			boot_mode == BOOT_MODE_UNDEFINE) {
+diff -uNr u-boot-mixtile_new/configs/blade3_defconfig u-boot-mixtile/configs/blade3_defconfig
+--- u-boot-mixtile_new/configs/blade3_defconfig	2023-11-20 14:53:20.494471532 +0000
++++ u-boot-mixtile/configs/blade3_defconfig	2023-11-20 14:53:43.762803565 +0000
+@@ -239,3 +239,4 @@
  CONFIG_AVB_LIBAVB_ATX=y
  CONFIG_AVB_LIBAVB_USER=y
  CONFIG_RK_AVB_LIBAVB_USER=y
