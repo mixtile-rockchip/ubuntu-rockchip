@@ -106,21 +106,6 @@ Index: u-boot-mixtile/arch/arm/dts/rockchip-pinconf.dtsi
  		bias-disable;
  		input-schmitt-enable;
  	};
-Index: u-boot-mixtile/arch/arm/mach-rockchip/board.c
-===================================================================
---- u-boot-mixtile.orig/arch/arm/mach-rockchip/board.c
-+++ u-boot-mixtile/arch/arm/mach-rockchip/board.c
-@@ -429,8 +429,9 @@ int board_late_init(void)
- 	if (boot_mode == BOOT_MODE_NORMAL ||
- 			boot_mode == BOOT_MODE_RECOVERY ||
- 			boot_mode == BOOT_MODE_UNDEFINE) {
--		power_delivery_func();
-+		//power_delivery_func();
- 	}
-+	power_delivery_func();
- 
- #ifdef CONFIG_ROCKCHIP_SET_ETHADDR
- 	rockchip_set_ethaddr();
 Index: u-boot-mixtile/configs/blade3_defconfig
 ===================================================================
 --- u-boot-mixtile.orig/configs/blade3_defconfig
