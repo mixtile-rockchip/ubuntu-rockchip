@@ -296,6 +296,14 @@ fi
 sync --file-system
 sync
 
+mkdir -p rkimage
+
+pushd rkimage
+cp -rf ../../tools/* .
+cp -rf ${mount_point}/writable/usr/lib/u-boot/idbloader.img Image
+cp -rf ${mount_point}/writable/usr/lib/u-boot/u-boot.itb Image
+popd
+
 # Umount partitions
 umount "${disk}${partition_char}1"
 umount "${disk}${partition_char}2"
@@ -315,7 +323,6 @@ fi
 
 # build RK format Image
 rkimg="../images/image-release-rockchip-format-blade3-ubuntu-${tag}-$(date "+%y%m%d").img"
-mkdir -p rkimage
 
 pushd rkimage
 cp -rf ../../tools/* .
@@ -330,6 +337,7 @@ rm -rf Image/update.img
 xz -3 --force --keep --quiet --threads=0 "../${rkimg}"
 rm -f "../${rkimg}"
 popd
+rm -rf rkimage
 
 # Compressing RAW format Image
 rawimg="../images/image-release-raw-format-blade3-ubuntu-${tag}-$(date "+%y%m%d").img"
