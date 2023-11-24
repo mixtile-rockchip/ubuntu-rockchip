@@ -22,7 +22,7 @@ diff -uprN u-boot-mixtile-new/arch/arm/mach-rockchip/boot_rkimg.c u-boot-mixtile
  
  	printf("PartType: %s\n", part_get_type(dev_desc));
  
-+	if ((blk_dread(dev_desc, 0x2000, 1, misc_buf) != 1)) {
++	if ((blk_dread(dev_desc, 0x6000, 1, misc_buf) != 1)) {
 +		printf("get misc_buf fail\n");
 +	}
 +
@@ -32,7 +32,7 @@ diff -uprN u-boot-mixtile-new/arch/arm/mach-rockchip/boot_rkimg.c u-boot-mixtile
 +									devtype, devnum);
 +		run_command(part_cmd, 0);
 +		memset(misc_buf, 0, sizeof(misc_buf));
-+		blk_dwrite(dev_desc, 0x2000, 1, misc_buf);
++		blk_dwrite(dev_desc, 0x6000, 1, misc_buf);
 +	}
 +
  	return dev_desc;
