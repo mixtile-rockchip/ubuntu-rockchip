@@ -9,3 +9,4 @@
 0009-arch-arm-mach-rockchip-fix-srctree-path.patch
 0010-blade3-enable-pcie3x4.patch
 0011-blade3-fix-uboot-power_delivery.patch
+0012-build-RKImage-add-partition-table.patch
