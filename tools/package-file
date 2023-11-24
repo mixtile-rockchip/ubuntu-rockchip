@@ -4,6 +4,7 @@
 package-file	package-file
 bootloader	Image/idbloader.img
 parameter	Image/parameter.txt
+misc        Image/misc.img
 uboot       Image/u-boot.itb
 boot		Image/boot.img
 rootfs		Image/rootfs.img
