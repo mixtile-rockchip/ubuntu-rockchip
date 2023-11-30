@@ -17,19 +17,7 @@ jobs:
     strategy:
       matrix:
         platform:
-          - orangepi-5
-          - orangepi-5b
-          - orangepi-5-plus
-          - rock-5b
-          - rock-5a
-          - radxa-cm5-io
-          - nanopc-t6
-          - nanopi-r6c
-          - nanopi-r6s
-          - indiedroid-nova
           - mixtile-blade3
-          - lubancat-4
-          - turing-rk1
 
     steps:
       - name: Get more disk space
@@ -80,18 +68,18 @@ jobs:
             fi
             sudo ./build.sh -b ${{ matrix.platform }} $args
 
-      - name: Upload server image
+      - name: Upload RK Image image
         uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-22.04.3-preinstalled-server-arm64-${{ matrix.platform }}
-          path: ./images/ubuntu-22.04.3-preinstalled-server-arm64-${{ matrix.platform }}.*
+          name: image-release-raw-format-blade3-ubuntu
+          path: ./images/image-release-raw-format-blade3-ubuntu*
           if-no-files-found: error
     
-      - name: Upload desktop image
+      - name: Upload RAW Image image
         uses: actions/upload-artifact@v3
         with:
-          name: ubuntu-22.04.3-preinstalled-desktop-arm64-${{ matrix.platform }}
-          path: ./images/ubuntu-22.04.3-preinstalled-desktop-arm64-${{ matrix.platform }}.*
+          name: image-release-rockchip-format-blade3-ubuntu
+          path: ./images/image-release-rockchip-format-blade3-ubuntu*
           if-no-files-found: error
 
       - name: Clean cache
