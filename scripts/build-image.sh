@@ -325,10 +325,6 @@ fi
 rkimg="../images/image-release-rockchip-format-blade3-ubuntu-${tag}-$(date "+%y%m%d").img"
 
 pushd rkimage
-cp -rf ../../tools/* .
-cp -rf ${mount_point}/writable/usr/lib/u-boot/idbloader.img Image
-cp -rf ${mount_point}/writable/usr/lib/u-boot/u-boot.itb Image
-
 dd if=../${img} of=Image/boot.img skip=32768 bs=512 count=1048576 conv=notrunc
 dd if=../${img} of=Image/rootfs.img skip=1081344 conv=notrunc
 ./afptool -pack ./ Image/update.img
