@@ -301,6 +301,14 @@ fi
 sync --file-system
 sync
 
+mkdir -p rkimage
+
+pushd rkimage
+cp -rf ../../tools/* .
+cp -rf ${mount_point}/writable/usr/lib/u-boot/idbloader.img Image
+cp -rf ${mount_point}/writable/usr/lib/u-boot/u-boot.itb Image
+popd
+
 # Umount partitions
 umount "${disk}${partition_char}1"
 umount "${disk}${partition_char}2"
@@ -311,7 +319,31 @@ losetup -d "${loop}"
 # Exit trap is no longer needed
 trap '' EXIT
 
-echo -e "\nCompressing $(basename "${img}.xz")\n"
-xz -3 --force --keep --quiet --threads=0 "${img}"
-rm -f "${img}"
-cd ../images && sha256sum "$(basename "${img}.xz")" > "$(basename "${img}.xz.sha256")"
+tag=""
+if [ -z "${img##*desktop*}" ]; then
+    tag="desktop"
+elif [ -z "${img##*server*}" ]; then
+    tag="server"
+fi
+
+# build RK format Image
+rkimg="../images/image-release-rockchip-format-${BOARD}-ubuntu-${tag}-$(date "+%y%m%d").img"
+
+pushd rkimage
+dd if=../${img} of=Image/boot.img skip=32768 bs=512 count=1048576 conv=notrunc
+dd if=../${img} of=Image/rootfs.img skip=1081344 conv=notrunc
+./afptool -pack ./ Image/update.img
+./rkImageMaker -RK3588 Image/MiniLoaderAll.bin Image/update.img ../${rkimg} -os_type:androidos
+rm -rf Image/update.img
+xz -3 --force --keep --quiet --threads=0 "../${rkimg}"
+rm -f "../${rkimg}"
+popd
+rm -rf rkimage
+
+# Compressing RAW format Image
+rawimg="../images/image-release-raw-format-${BOARD}-ubuntu-${tag}-$(date "+%y%m%d").img"
+mv "${img}" "${rawimg}"
+echo -e "\nCompressing $(basename "${rawimg}.xz")\n"
+xz -3 --force --keep --quiet --threads=0 "${rawimg}"
+rm -f "${rawimg}"
+cd ../images && sha256sum "$(basename "${rawimg}.xz")" > "$(basename "${rawimg}.xz.sha256")"

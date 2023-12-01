@@ -1,0 +1,10 @@
+# NAME		Relative path
+#
+#HWDEF		HWDEF
+package-file	package-file
+bootloader	Image/idbloader.img
+parameter	Image/parameter.txt
+uboot       Image/u-boot.itb
+misc        Image/misc.img
+boot		Image/boot.img
+rootfs		Image/rootfs.img
