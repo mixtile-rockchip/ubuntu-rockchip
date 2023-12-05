@@ -178,6 +178,7 @@ for type in $target; do
         chroot ${chroot_dir} /bin/bash -c "systemctl enable adbd"
         cp ${overlay_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service ${chroot_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service
         chroot ${chroot_dir} /bin/bash -c "systemctl enable serial-getty@ttyFIQ0"
+        cp ${overlay_dir}/usr/bin/vendor_storage ${chroot_dir}/usr/bin/vendor_storage
 	if [ -f ${chroot_dir}/usr/share/flash-kernel/db/all.db ]; then
                 if ! grep -q "Machine: Mixtile Core 3588E" ${chroot_dir}/usr/share/flash-kernel/db/all.db; then
                         sed -i "/Machine: Mixtile Blade 3/a Machine: Mixtile Core 3588E" ${chroot_dir}/usr/share/flash-kernel/db/all.db
