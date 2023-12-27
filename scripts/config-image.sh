@@ -179,11 +179,15 @@ for type in $target; do
         cp ${overlay_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service ${chroot_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service
         chroot ${chroot_dir} /bin/bash -c "systemctl enable serial-getty@ttyFIQ0"
         cp ${overlay_dir}/usr/bin/vendor_storage ${chroot_dir}/usr/bin/vendor_storage
+        chroot ${chroot_dir} /bin/bash -c "apt-get -y install feh xdotool qrencode stress-ng zbar-tools fio evtest imagemagick"
 	if [ -f ${chroot_dir}/usr/share/flash-kernel/db/all.db ]; then
                 if ! grep -q "Machine: Mixtile Core 3588E" ${chroot_dir}/usr/share/flash-kernel/db/all.db; then
                         sed -i "/Machine: Mixtile Blade 3/a Machine: Mixtile Core 3588E" ${chroot_dir}/usr/share/flash-kernel/db/all.db
                 fi
         fi
+	chroot ${chroot_dir} /bin/bash -c "apt-mark hold linux-image-5.10.160-rockchip linux-headers-5.10.160-rockchip u-boot-mixtile-core3588e flash-kernel"
+	chroot ${chroot_dir} /bin/bash -c "systemctl mask NetworkManager-wait-online.service plymouth-quit-wait.service"
+
     elif [ "${BOARD}" == indiedroid-nova ]; then
     {
         echo 'SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-hdmi0-sound", ENV{SOUND_DESCRIPTION}="HDMI0 Audio"'
@@ -233,7 +237,6 @@ for type in $target; do
 
     # Clean package cache
     chroot ${chroot_dir} /bin/bash -c "apt-get -y autoremove && apt-get -y clean && apt-get -y autoclean"
-    chroot ${chroot_dir} /bin/bash -c "add-apt-repository -y -r ppa:jjriek/rockchip"
 
     # Copy kernel and initrd for the boot partition
     mkdir -p ${chroot_dir}/boot/firmware/
