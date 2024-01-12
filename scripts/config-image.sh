@@ -170,6 +170,7 @@ for type in $target; do
     elif [ "${BOARD}" == mixtile-core3588e ]; then
     {
 	echo 'SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-hdmi0-sound", ENV{SOUND_DESCRIPTION}="HDMI0 Audio"'
+ 	echo 'SUBSYSTEM=="sound", ENV{ID_PATH}=="platform-edp1-sound", ENV{SOUND_DESCRIPTION}="eDP1 Audio"'
     } > ${chroot_dir}/etc/udev/rules.d/90-naming-audios.rules
         cp ${overlay_dir}/usr/bin/adbd ${chroot_dir}/usr/bin/adbd
         cp ${overlay_dir}/etc/init.d/.usb_config ${chroot_dir}/etc/init.d/.usb_config
