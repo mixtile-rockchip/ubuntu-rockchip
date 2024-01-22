@@ -177,6 +177,7 @@ for type in $target; do
         cp ${overlay_dir}/usr/bin/usbdevice ${chroot_dir}/usr/bin/usbdevice
         cp ${overlay_dir}/usr/lib/systemd/system/adbd.service ${chroot_dir}/usr/lib/systemd/system/adbd.service
         chroot ${chroot_dir} /bin/bash -c "systemctl enable adbd"
+	cp ${overlay_dir}/usr/lib/udev/rules.d/61-usbdevice.rules ${chroot_dir}/usr/lib/udev/rules.d/61-usbdevice.rules
         cp ${overlay_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service ${chroot_dir}/usr/lib/systemd/system/serial-getty@ttyFIQ0.service
         chroot ${chroot_dir} /bin/bash -c "systemctl enable serial-getty@ttyFIQ0"
 	chroot ${chroot_dir} /bin/bash -c "systemctl mask NetworkManager-wait-online.service plymouth-quit-wait.service"
