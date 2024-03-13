@@ -238,6 +238,9 @@ cp ${overlay_dir}/etc/initramfs-tools/conf.d/compression.conf ${chroot_dir}/etc/
 sed -i 's/ENABLED=1/ENABLED=0/g' ${chroot_dir}/etc/default/motd-news
 chroot ${chroot_dir} /bin/bash -c "pro config set apt_news=false"
 
+# Disable apport bug reporting
+sed -i 's/enabled=1/enabled=0/g' ${chroot_dir}/etc/default/apport
+
 # Remove release upgrade motd
 rm -f ${chroot_dir}/var/lib/ubuntu-release-upgrader/release-upgrade-available
 cp ${overlay_dir}/etc/update-manager/release-upgrades ${chroot_dir}/etc/update-manager/release-upgrades
