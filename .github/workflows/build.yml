@@ -13,9 +13,7 @@ jobs:
         matrix:
           flavor:
             - desktop
-            - server
           suite:
-            - jammy
             - noble
     steps:
       - name: Get more disk space
@@ -63,7 +61,6 @@ jobs:
     strategy:
         matrix:
           suite:
-            - jammy
             - noble
     steps:
       - name: Get more disk space
@@ -113,40 +110,11 @@ jobs:
     strategy:
       matrix:
         board:
-          - orangepi-3b
-          - orangepi-5
-          - orangepi-5b
-          - orangepi-5-plus
-          - orangepi-5-pro
-          - rock-5d
-          - rock-5c
-          - rock-5b-plus
-          - rock-5b
-          - rock-5a
-          - rock-5-itx
-          - radxa-cm5-rpi-cm4-io
-          - radxa-cm5-io
-          - radxa-nx5-io
-          - radxa-zero3
-          - nanopc-t6
-          - nanopi-r6c
-          - nanopi-r6s
-          - indiedroid-nova
           - mixtile-blade3
-          - mixtile-core3588e
-          - lubancat-4
-          - turing-rk1
-          - armsom-sige5
-          - armsom-w3
         flavor:
           - desktop
-          - server
         suite:
-          - jammy
           - noble
-        exclude:
-          - board: armsom-sige5
-            suite: jammy
 
     steps:
       - name: Get more disk space
