@@ -161,11 +161,18 @@ jobs:
         shell: bash
         run: sudo ./build.sh --board=${{ matrix.board }} --suite=${{ matrix.suite }} --flavor=${{ matrix.flavor }}
 
-      - name: Upload
+      - name: Upload Raw Image
         uses: actions/upload-artifact@v4.3.3
         with:
           name: ubuntu-${{ matrix.suite == 'jammy' && '22.04' || matrix.suite == 'noble' && '24.04' }}-preinstalled-${{ matrix.flavor }}-arm64-${{ matrix.board }}
           path: ./images/ubuntu-*-preinstalled-${{ matrix.flavor }}-arm64-${{ matrix.board }}.*
+          if-no-files-found: error
+
+      - name: Upload Rockchip format Image
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: ubuntu-${{ matrix.suite == 'jammy' && '22.04' || matrix.suite == 'noble' && '24.04' }}-preinstalled-${{ matrix.flavor }}-arm64-${{ matrix.board }}-rockchip-format
+          path: ./images/ubuntu-*-preinstalled-${{ matrix.flavor }}-arm64-${{ matrix.board }}-rockchip-format.*
           if-no-files-found: error
 
       - name: Clean cache

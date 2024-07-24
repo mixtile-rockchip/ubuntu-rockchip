@@ -1,0 +1,40 @@
+diff -uprN u-boot-mixtile-new/arch/arm/mach-rockchip/boot_rkimg.c u-boot-mixtile/arch/arm/mach-rockchip/boot_rkimg.c
+--- u-boot-mixtile-new/arch/arm/mach-rockchip/boot_rkimg.c	2023-11-24 17:59:56.594450502 +0800
++++ u-boot-mixtile/arch/arm/mach-rockchip/boot_rkimg.c	2023-11-24 18:00:49.794800063 +0800
+@@ -238,12 +238,16 @@ static struct blk_desc *dev_desc;
+ struct blk_desc *rockchip_get_bootdev(void)
+ {
+ 	int dev_type;
++	char *devtype = NULL;
+ 	int devnum;
++	char part_cmd[255];
++	char misc_buf[512];
+ 
+ 	if (dev_desc)
+ 		return dev_desc;
+ 
+ 	boot_devtype_init();
++	devtype = env_get("devtype");
+ 	dev_type = get_bootdev_type();
+ 	devnum = env_get_ulong("devnum", 10, 0);
+ 
+@@ -269,6 +273,19 @@ struct blk_desc *rockchip_get_bootdev(vo
+ 
+ 	printf("PartType: %s\n", part_get_type(dev_desc));
+ 
++	if ((blk_dread(dev_desc, 0x6000, 1, misc_buf) != 1)) {
++		printf("get misc_buf fail\n");
++	}
++
++	misc_buf[9] = '\0';
++	if (strcmp(misc_buf, "firstboot") == 0) {
++		sprintf(part_cmd, "gpt write %s %d 'name=rootfs,start=16MB,size=-,uuid=BC13C2FF-59E6-4262-A352-B275FD6F7172'",
++									devtype, devnum);
++		run_command(part_cmd, 0);
++		memset(misc_buf, 0, sizeof(misc_buf));
++		blk_dwrite(dev_desc, 0x6000, 1, misc_buf);
++	}
++
+ 	return dev_desc;
+ }
+ 
