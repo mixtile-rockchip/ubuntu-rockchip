@@ -13,6 +13,7 @@ jobs:
         matrix:
           flavor:
             - desktop
+            - server
           suite:
             - noble
     steps:
@@ -113,6 +114,7 @@ jobs:
           - mixtile-blade3
         flavor:
           - desktop
+          - server
         suite:
           - noble
 

@@ -23,6 +23,11 @@ function config_image_hook__mixtile-blade3() {
     chroot "${rootfs}" sed -i '/^menu title/d' /usr/sbin/u-boot-update
     chroot "${rootfs}" apt-mark hold u-boot-menu
 
+    if [ "$FLAVOR" = "server" ]; then
+        chroot "${rootfs}" apt-get -y purge cloud-init
+        cp ${overlay_dir}/boot/firmware/network-config ${rootfs}/etc/netplan/default.yaml
+    fi
+
     cat << EOF | chroot "${rootfs}"
 export DEBIAN_FRONTEND=noninteractive
 export LANG=en_US.UTF-8

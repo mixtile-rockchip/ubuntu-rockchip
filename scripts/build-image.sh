@@ -75,102 +75,43 @@ umount "${disk}"* 2> /dev/null || true
 umount ${mount_point}/* 2> /dev/null || true
 mkdir -p ${mount_point}
 
-if [ -z "${img##*server*}" ]; then
-    # Setup partition table
-    dd if=/dev/zero of="${disk}" count=4096 bs=512
-    parted --script "${disk}" \
-    mklabel gpt \
-    mkpart primary fat32 16MiB 20MiB \
-    mkpart primary ext4 20MiB 100%
+# Setup partition table
+dd if=/dev/zero of="${disk}" count=4096 bs=512
+parted --script "${disk}" \
+mklabel gpt \
+mkpart primary ext4 16MiB 100%
 
-    # Create partitions
-    {
-        echo "t"
-        echo "1"
-        echo "EBD0A0A2-B9E5-4433-87C0-68B6B72699C7"
-        echo "t"
-        echo "2"
-        echo "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
-        echo "w"
-    } | fdisk "${disk}" &> /dev/null || true
+# Create partitions
+{
+    echo "t"
+    echo "1"
+    echo "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
+    echo "w"
+} | fdisk "${disk}" &> /dev/null || true
 
-    partprobe "${disk}"
+partprobe "${disk}"
 
-    partition_char="$(if [[ ${disk: -1} == [0-9] ]]; then echo p; fi)"
+partition_char="$(if [[ ${disk: -1} == [0-9] ]]; then echo p; fi)"
 
-    sleep 1
+sleep 1
 
-    wait_loopdev "${disk}${partition_char}2" 60 || {
-        echo "Failure to create ${disk}${partition_char}1 in time"
-        exit 1
-    }
+wait_loopdev "${disk}${partition_char}1" 60 || {
+    echo "Failure to create ${disk}${partition_char}1 in time"
+    exit 1
+}
 
-    sleep 1
+sleep 1
 
-    wait_loopdev "${disk}${partition_char}1" 60 || {
-        echo "Failure to create ${disk}${partition_char}1 in time"
-        exit 1
-    }
+# Generate random uuid for rootfs
+root_uuid=$(uuidgen)
 
-    sleep 1
+# Create filesystems on partitions
+dd if=/dev/zero of="${disk}${partition_char}1" bs=1KB count=10 > /dev/null
+mkfs.ext4 -U "${root_uuid}" -L desktop-rootfs "${disk}${partition_char}1"
 
-    # Generate random uuid for bootfs
-    boot_uuid=$(uuidgen | head -c8)
-
-    # Generate random uuid for rootfs
-    root_uuid=$(uuidgen)
-
-    # Create filesystems on partitions
-    mkfs.vfat -i "${boot_uuid}" -F32 -n CIDATA "${disk}${partition_char}1"
-    dd if=/dev/zero of="${disk}${partition_char}2" bs=1KB count=10 > /dev/null
-    mkfs.ext4 -U "${root_uuid}" -L cloudimg-rootfs "${disk}${partition_char}2"
-
-    # Mount partitions
-    mkdir -p ${mount_point}/{system-boot,writable} 
-    mount "${disk}${partition_char}1" ${mount_point}/system-boot
-    mount "${disk}${partition_char}2" ${mount_point}/writable
-
-    # Cloud init config for server image
-    cp ../overlay/boot/firmware/{meta-data,user-data,network-config} ${mount_point}/system-boot
-else
-    # Setup partition table
-    dd if=/dev/zero of="${disk}" count=4096 bs=512
-    parted --script "${disk}" \
-    mklabel gpt \
-    mkpart primary ext4 16MiB 100%
-
-    # Create partitions
-    {
-        echo "t"
-        echo "1"
-        echo "C12A7328-F81F-11D2-BA4B-00A0C93EC93B"
-        echo "w"
-    } | fdisk "${disk}" &> /dev/null || true
-
-    partprobe "${disk}"
-
-    partition_char="$(if [[ ${disk: -1} == [0-9] ]]; then echo p; fi)"
-
-    sleep 1
-
-    wait_loopdev "${disk}${partition_char}1" 60 || {
-        echo "Failure to create ${disk}${partition_char}1 in time"
-        exit 1
-    }
-
-    sleep 1
-
-    # Generate random uuid for rootfs
-    root_uuid=$(uuidgen)
-
-    # Create filesystems on partitions
-    dd if=/dev/zero of="${disk}${partition_char}1" bs=1KB count=10 > /dev/null
-    mkfs.ext4 -U "${root_uuid}" -L desktop-rootfs "${disk}${partition_char}1"
-
-    # Mount partitions
-    mkdir -p ${mount_point}/writable
-    mount "${disk}${partition_char}1" ${mount_point}/writable
-fi
+# Mount partitions
+mkdir -p ${mount_point}/writable
+mount "${disk}${partition_char}1" ${mount_point}/writable
 
 # Copy the rootfs to root partition
 tar -xpf "${rootfs}" -C ${mount_point}/writable
