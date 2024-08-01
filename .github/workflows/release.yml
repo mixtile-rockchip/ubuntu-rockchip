@@ -68,7 +68,7 @@ jobs:
 
       - name: Build
         shell: bash
-        run: sudo ./build.sh --suite=${{ matrix.suite }} --flavor=${{ matrix.flavor }} --rootfs-only --launchpad
+        run: sudo ./build.sh --suite=${{ matrix.suite }} --flavor=${{ matrix.flavor }} --rootfs-only
 
       - name: Upload
         uses: actions/upload-artifact@v4.3.3
@@ -85,32 +85,7 @@ jobs:
     strategy:
       matrix:
         board:
-          - orangepi-3b
-          - orangepi-5
-          - orangepi-5b
-          - orangepi-5-plus
-          - orangepi-5-pro
-          - rock-5d
-          - rock-5c
-          - rock-5b-plus
-          - rock-5b
-          - rock-5a
-          - rock-5-itx
-          - radxa-cm5-rpi-cm4-io
-          - radxa-cm5-io
-          - radxa-nx5-io
-          - radxa-zero3
-          - nanopc-t6
-          - nanopi-r6c
-          - nanopi-r6s
-          - indiedroid-nova
           - mixtile-blade3
-          - mixtile-core3588e
-          - lubancat-4
-          - turing-rk1
-          - roc-rk3588s-pc
-          - armsom-sige7
-          - armsom-w3
         flavor:
           - desktop
           - server
@@ -154,9 +129,9 @@ jobs:
 
       - name: Build
         shell: bash
-        run: sudo ./build.sh --board=${{ matrix.board }} --suite=${{ matrix.suite }} --flavor=${{ matrix.flavor }} --launchpad
+        run: sudo ./build.sh --board=${{ matrix.board }} --suite=${{ matrix.suite }} --flavor=${{ matrix.flavor }}
 
-      - name: Upload
+      - name: Upload Raw Image
         if: needs.prepare_release.outputs.release_id != '' 
         uses: xresloader/upload-to-github-release@v1
         env:
@@ -164,6 +139,17 @@ jobs:
         with:
           release_id: ${{ needs.prepare_release.outputs.release_id }}
           file: images/ubuntu-*-preinstalled-*-arm64-${{ matrix.board }}.*
+          draft: true
+          overwrite: true
+
+      - name: Upload Rockchip format Image
+        if: needs.prepare_release.outputs.release_id != ''
+        uses: xresloader/upload-to-github-release@v1
+        env:
+            GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ needs.prepare_release.outputs.release_id }}
+          file: images/ubuntu-*-preinstalled-*-arm64-${{ matrix.board }}-rockchip-format.*
           draft: true
           overwrite: true
 
