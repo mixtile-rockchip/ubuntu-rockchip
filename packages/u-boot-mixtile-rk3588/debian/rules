@@ -25,7 +25,7 @@ ${u-boot-rockchip_platforms}:
 	  $@_defconfig
 
 	@touch .scmversion
-	@sed -i 's/CONFIG_BOOTDELAY=.*/CONFIG_BOOTDELAY=2/g' debian/build/$@/.config
+	@sed -i 's/CONFIG_BOOTDELAY=.*/CONFIG_BOOTDELAY=0/g' debian/build/$@/.config
 	@sed -i 's/CONFIG_DISABLE_CONSOLE=y/CONFIG_DISABLE_CONSOLE=n/g' debian/build/$@/.config
 	@sed -i 's/CONFIG_LOCALVERSION=""/CONFIG_LOCALVERSION=""/g' debian/build/$@/.config
 
