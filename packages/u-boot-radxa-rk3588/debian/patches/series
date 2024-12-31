@@ -13,3 +13,4 @@
 0013-add-support-for-aio-3588l.patch
 0014-board-rockchip-Add-the-ArmSoM-AIM7.patch
 0015-Revert-rockchip-resource-Add-avb-verify.patch
+0016-build-RKImage-add-partition-table.patch

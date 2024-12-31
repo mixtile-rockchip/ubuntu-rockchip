@@ -197,6 +197,12 @@ chroot ${mount_point}/writable/ u-boot-update
 sync --file-system
 sync
 
+mkdir -p rkimage
+pushd rkimage
+cp -rf ../../tools/* .
+cp -rf ${mount_point}/writable/usr/lib/u-boot/u-boot.itb Image
+popd
+
 # Umount partitions
 umount "${disk}${partition_char}1"
 umount "${disk}${partition_char}2" 2> /dev/null || true
@@ -206,6 +212,19 @@ losetup -d "${loop}"
 
 # Exit trap is no longer needed
 trap '' EXIT
+
+# build RK format Image
+rkimg="../images/$(basename "${rootfs}" .rootfs.tar)${KVER}-rockchip-format.img"
+pushd rkimage
+dd if=../${img} of=Image/rootfs.img skip=32768 conv=notrunc
+qemu-x86_64-static ./afptool -pack ./ Image/update.img
+qemu-x86_64-static ./rkImageMaker -RK3588 Image/MiniLoaderAll.bin Image/update.img ../${rkimg} -os_type:androidos
+rm -rf Image/update.img
+xz -6 --force --keep --quiet --threads=0 "../${rkimg}"
+sha256sum "../${rkimg}.xz" > "../${rkimg}.xz.sha256"
+rm -f "../${rkimg}"
+popd
+rm -rf rkimage
 
 echo -e "\nCompressing $(basename "${img}.xz")\n"
 xz -6 --force --keep --quiet --threads=0 "${img}"

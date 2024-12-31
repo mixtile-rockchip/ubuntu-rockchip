@@ -31,6 +31,7 @@ function config_image_hook__mixtile-blade3() {
     chroot "${rootfs}" dpkg -i /tmp/rockchip-adbd.deb
     echo "BUILD_ID=$(date +'%Y-%m-%d')" >> "${rootfs}/etc/os-release"
 
+    chroot "${rootfs}" sed -i '/^menu title/d' /usr/sbin/u-boot-update
     chroot "${rootfs}" sed -i 's/^U_BOOT_PROMPT=.*$/U_BOOT_PROMPT="0"/' /usr/share/u-boot-menu/conf.d/ubuntu.conf
     chroot "${rootfs}" apt-mark hold u-boot-menu
 
